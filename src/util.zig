@@ -11,7 +11,6 @@ pub const gpa = gpa_impl.allocator();
 
 // Add utility functions here
 
-
 // Useful stdlib functions
 const tokenize = std.mem.tokenize;
 const split = std.mem.split;

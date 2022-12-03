@@ -15,7 +15,7 @@ fn instantiateTemplate(template: []const u8, day: u32) ![]const u8 {
     while (std.mem.indexOfScalar(u8, rest, '$')) |index| {
         try list.appendSlice(rest[0..index]);
         try std.fmt.format(list.writer(), "{d:0>2}", .{day});
-        rest = rest[index+1..];
+        rest = rest[index + 1 ..];
     }
     try list.appendSlice(rest);
     return list.toOwnedSlice();
@@ -49,7 +49,7 @@ pub fn main() !void {
             std.os.exit(1);
         },
         else => |e| {
-            std.debug.print("Failed to open {s}: {}\n", .{hashes_file, e});
+            std.debug.print("Failed to open {s}: {}\n", .{ hashes_file, e });
             return e;
         },
     };
@@ -62,7 +62,7 @@ pub fn main() !void {
         defer gpa.allocator().free(filename);
 
         var new_file = false;
-        const file = std.fs.cwd().openFile(filename, .{.mode = .read_write}) catch |err| switch (err) {
+        const file = std.fs.cwd().openFile(filename, .{ .mode = .read_write }) catch |err| switch (err) {
             error.FileNotFound => blk: {
                 new_file = true;
                 break :blk try std.fs.cwd().createFile(filename, .{});
@@ -86,7 +86,7 @@ pub fn main() !void {
             var hash: [Hash.digest_length]u8 = undefined;
             Hash.hash(contents, &hash, .{});
 
-            regenerate = std.mem.eql(u8, &hash, &hashes[day-1]);
+            regenerate = std.mem.eql(u8, &hash, &hashes[day - 1]);
         } else {
             regenerate = true;
         }
@@ -100,7 +100,7 @@ pub fn main() !void {
             const text = try instantiateTemplate(template, day);
             defer gpa.allocator().free(text);
 
-            Hash.hash(text, &hashes[day-1], .{});
+            Hash.hash(text, &hashes[day - 1], .{});
             updated_hashes = true;
 
             try file.writeAll(text);
@@ -118,7 +118,7 @@ pub fn main() !void {
     if (updated_hashes) {
         try std.fs.cwd().writeFile(hashes_file, std.mem.asBytes(hashes));
         if (skipped_any) {
-            std.debug.print("Some days were skipped. Delete them to force regeneration.\n",.{});
+            std.debug.print("Some days were skipped. Delete them to force regeneration.\n", .{});
         }
     } else {
         std.debug.print("No updates made, all days were modified. Delete src/dayXX.zig to force regeneration.\n", .{});

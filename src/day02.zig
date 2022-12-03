@@ -28,7 +28,7 @@ fn doPart(input: []const u8, comptime parse_line: @TypeOf(Round.fromChoice)) !i3
     return score;
 }
 
-const Outcome = enum (i32) {
+const Outcome = enum(i32) {
     loss = 0,
     draw = 3,
     win = 6,
@@ -43,7 +43,7 @@ const Outcome = enum (i32) {
     }
 };
 
-const Choice = enum (i32) {
+const Choice = enum(i32) {
     rock = 1,
     paper = 2,
     scissors = 3,
@@ -133,9 +133,9 @@ test "parse - part 1" {
     defer std.testing.allocator.free(rounds);
 
     const expected = [_]Round{
-        Round{.opp = .rock, .me = .paper},
-        Round{.opp = .paper, .me = .rock},
-        Round{.opp = .scissors, .me = .scissors},
+        Round{ .opp = .rock, .me = .paper },
+        Round{ .opp = .paper, .me = .rock },
+        Round{ .opp = .scissors, .me = .scissors },
     };
     try std.testing.expectEqualSlices(Round, expected[0..expected.len], rounds);
 }
@@ -145,9 +145,9 @@ test "parse - part 2" {
     defer std.testing.allocator.free(rounds);
 
     const expected = [_]Round{
-        Round{.opp = .rock, .me = .rock},
-        Round{.opp = .paper, .me = .rock},
-        Round{.opp = .scissors, .me = .rock},
+        Round{ .opp = .rock, .me = .rock },
+        Round{ .opp = .paper, .me = .rock },
+        Round{ .opp = .scissors, .me = .rock },
     };
     try std.testing.expectEqualSlices(Round, expected[0..expected.len], rounds);
 }

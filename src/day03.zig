@@ -52,7 +52,7 @@ fn toBit(c: u8) usize {
     return switch (c) {
         'a'...'z' => c - 'a',
         'A'...'Z' => 26 + c - 'A',
-        else => unreachable
+        else => unreachable,
     };
 }
 
@@ -74,7 +74,7 @@ const Rucksack = struct {
             bs2.set(toBit(c));
         }
 
-        return Rucksack{.comp1 = bs1, .comp2 = bs2};
+        return Rucksack{ .comp1 = bs1, .comp2 = bs2 };
     }
 
     fn allItems(self: Rucksack) BitSet {
@@ -102,7 +102,7 @@ const test_input: []const u8 =
 ;
 
 test "Rucksack.common" {
-    const expecteds = [_]?usize{ 16, 38, 42, 22, 20, 19};
+    const expecteds = [_]?usize{ 16, 38, 42, 22, 20, 19 };
     var lines = split(u8, test_input, "\n");
 
     for (expecteds) |expected| {

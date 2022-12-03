@@ -18,7 +18,6 @@ pub fn main() !void {
 
     try stdout.print("Part 1: {}\n", .{part1(calories)});
     try stdout.print("Part 2: {}\n", .{part2(calories)});
-
 }
 
 fn part1(calories: []u64) u64 {
