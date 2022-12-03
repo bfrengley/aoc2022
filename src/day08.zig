@@ -11,7 +11,7 @@ const gpa = util.gpa;
 const data = @embedFile("data/day08.txt");
 
 pub fn main() !void {
-    
+
 }
 
 // Useful stdlib functions
@@ -41,6 +41,9 @@ const assert = std.debug.assert;
 const sort = std.sort.sort;
 const asc = std.sort.asc;
 const desc = std.sort.desc;
+
+const t = std.testing;
+const test_alloc = t.allocator;
 
 // Generated from template/template.zig.
 // Run `zig build generate` to update.

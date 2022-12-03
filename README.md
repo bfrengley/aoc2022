@@ -1,3 +1,9 @@
+# Advent of Code 2022
+
+Based on SpexGuy's [Zig template](https://github.com/SpexGuy/Zig-AoC-Template).
+
+---
+
 # Advent Of Code Zig Template
 
 This repo provides a template for Advent of Code participants using Zig.  It contains a main file for each day, a build.zig file set up with targets for each day, and Visual Studio Code files for debugging.
