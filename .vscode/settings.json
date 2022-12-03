@@ -3,5 +3,6 @@
     // You can add this line to your global settings
     // with Ctrl+P "> Preferences: Open Settings (JSON)"
     // to have it apply to all projects
-    "debug.allowBreakpointsEverywhere": true
+    "debug.allowBreakpointsEverywhere": true,
+    "zls.warn_style": true
 }

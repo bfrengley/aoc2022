@@ -13,7 +13,7 @@ const data = @embedFile("data/day01.txt");
 pub fn main() !void {
     const stdout = std.io.getStdOut().writer();
 
-    const calories = try get_calories_per_elf(gpa, data);
+    const calories = try getCaloriesPerElf(gpa, data);
     defer gpa.free(calories);
 
     try stdout.print("Part 1: {}\n", .{part1(calories)});
@@ -29,7 +29,7 @@ fn part2(calories: []u64) u64 {
     return calories[0] + calories[1] + calories[2];
 }
 
-fn get_calories_per_elf(allocator: Allocator, input: []const u8) ![]u64 {
+fn getCaloriesPerElf(allocator: Allocator, input: []const u8) ![]u64 {
     var lines = split(u8, input, "\n");
 
     var calories = List(u64).init(allocator);
@@ -74,20 +74,20 @@ const test_input: []const u8 =
     \\
 ;
 
-test "get_calories_per_elf" {
-    const calories = try get_calories_per_elf(std.testing.allocator, test_input);
+test "getCaloriesPerElf" {
+    const calories = try getCaloriesPerElf(std.testing.allocator, test_input);
     defer std.testing.allocator.free(calories);
     try std.testing.expectEqualSlices(u64, &[_]u64{ 24000, 11000, 10000, 6000, 4000 }, calories);
 }
 
 test "day 1 part 1" {
-    const calories = try get_calories_per_elf(std.testing.allocator, test_input);
+    const calories = try getCaloriesPerElf(std.testing.allocator, test_input);
     defer std.testing.allocator.free(calories);
     try std.testing.expectEqual(@as(u64, 24000), part1(calories));
 }
 
 test "day 1 part 2" {
-    const calories = try get_calories_per_elf(std.testing.allocator, test_input);
+    const calories = try getCaloriesPerElf(std.testing.allocator, test_input);
     defer std.testing.allocator.free(calories);
     try std.testing.expectEqual(@as(u64, 45000), part2(calories));
 }

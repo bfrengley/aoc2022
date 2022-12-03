@@ -13,11 +13,11 @@ const data = @embedFile("data/day02.txt");
 pub fn main() !void {
     const stdout = std.io.getStdOut().writer();
 
-    try stdout.print("Part 1: {}\n", .{try do_part(data, comptime Round.from_choice)});
-    try stdout.print("Part 2: {}\n", .{try do_part(data, comptime Round.from_outcome)});
+    try stdout.print("Part 1: {}\n", .{try doPart(data, comptime Round.fromChoice)});
+    try stdout.print("Part 2: {}\n", .{try doPart(data, comptime Round.fromOutcome)});
 }
 
-fn do_part(input: []const u8, comptime parse_line: @TypeOf(Round.from_choice)) !i32 {
+fn doPart(input: []const u8, comptime parse_line: @TypeOf(Round.fromChoice)) !i32 {
     const rounds = try parse(gpa, input, parse_line);
     defer gpa.free(rounds);
 
@@ -64,7 +64,7 @@ const Choice = enum (i32) {
         };
     }
 
-    fn loses_to(self: Choice) Choice {
+    fn losesTo(self: Choice) Choice {
         return switch (self) {
             .scissors => .rock,
             inline else => |val| @intToEnum(Choice, @enumToInt(val) + 1),
@@ -76,14 +76,14 @@ const Round = struct {
     opp: Choice,
     me: Choice,
 
-    fn from_choice(line: []const u8) Round {
+    fn fromChoice(line: []const u8) Round {
         return Round{
             .opp = Choice.parse(line[0]),
             .me = Choice.parse(line[2]),
         };
     }
 
-    fn from_outcome(line: []const u8) Round {
+    fn fromOutcome(line: []const u8) Round {
         const opp = Choice.parse(line[0]);
         const result = Outcome.parse(line[2]);
 
@@ -91,7 +91,7 @@ const Round = struct {
             .opp = opp,
             .me = switch (result) {
                 .draw => opp,
-                .win => opp.loses_to(),
+                .win => opp.losesTo(),
                 .loss => opp.beats(),
             },
         };
@@ -110,7 +110,7 @@ const Round = struct {
     }
 };
 
-fn parse(alloc: Allocator, input: []const u8, comptime parse_line: @TypeOf(Round.from_choice)) ![]Round {
+fn parse(alloc: Allocator, input: []const u8, comptime parse_line: @TypeOf(Round.fromChoice)) ![]Round {
     var lines = split(u8, trim(u8, input, "\n"), "\n");
     var rounds = List(Round).init(alloc);
 
@@ -129,7 +129,7 @@ const test_input: []const u8 =
 ;
 
 test "parse - part 1" {
-    const rounds = try parse(std.testing.allocator, test_input, comptime Round.from_choice);
+    const rounds = try parse(std.testing.allocator, test_input, comptime Round.fromChoice);
     defer std.testing.allocator.free(rounds);
 
     const expected = [_]Round{
@@ -141,7 +141,7 @@ test "parse - part 1" {
 }
 
 test "parse - part 2" {
-    const rounds = try parse(std.testing.allocator, test_input, comptime Round.from_outcome);
+    const rounds = try parse(std.testing.allocator, test_input, comptime Round.fromOutcome);
     defer std.testing.allocator.free(rounds);
 
     const expected = [_]Round{
@@ -153,11 +153,11 @@ test "parse - part 2" {
 }
 
 test "day 2 part 1" {
-    try std.testing.expectEqual(@as(i32, 15), try do_part(test_input, comptime Round.from_choice));
+    try std.testing.expectEqual(@as(i32, 15), try doPart(test_input, comptime Round.fromChoice));
 }
 
 test "day 2 part 2" {
-    try std.testing.expectEqual(@as(i32, 12), try do_part(test_input, comptime Round.from_outcome));
+    try std.testing.expectEqual(@as(i32, 12), try doPart(test_input, comptime Round.fromOutcome));
 }
 
 // Useful stdlib functions
