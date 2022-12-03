@@ -11,7 +11,85 @@ const gpa = util.gpa;
 const data = @embedFile("data/day01.txt");
 
 pub fn main() !void {
-    
+    const stdout = std.io.getStdOut().writer();
+
+    const calories = try get_calories_per_elf(gpa, data);
+    defer gpa.free(calories);
+
+    try stdout.print("Part 1: {}\n", .{part1(calories)});
+    try stdout.print("Part 2: {}\n", .{part2(calories)});
+
+}
+
+fn part1(calories: []u64) u64 {
+    return calories[0];
+}
+
+fn part2(calories: []u64) u64 {
+    return calories[0] + calories[1] + calories[2];
+}
+
+fn get_calories_per_elf(allocator: Allocator, input: []const u8) ![]u64 {
+    var lines = split(u8, input, "\n");
+
+    var calories = List(u64).init(allocator);
+    defer calories.deinit();
+
+    var curr: u64 = 0;
+
+    while (lines.next()) |line| {
+        if (line.len == 0) {
+            try calories.append(curr);
+            curr = 0;
+            continue;
+        }
+
+        curr += try parseInt(u64, line, 10);
+    }
+
+    if (curr != 0) {
+        try calories.append(curr);
+    }
+
+    var slice = calories.toOwnedSlice();
+    sort(u64, slice, {}, comptime desc(u64));
+    return slice;
+}
+
+const test_input: []const u8 =
+    \\1000
+    \\2000
+    \\3000
+    \\
+    \\4000
+    \\
+    \\5000
+    \\6000
+    \\
+    \\7000
+    \\8000
+    \\9000
+    \\
+    \\10000
+    \\
+;
+
+test "get_calories_per_elf" {
+    const calories = try get_calories_per_elf(std.testing.allocator, test_input);
+    defer std.testing.allocator.free(calories);
+    try std.testing.expectEqualSlices(u64, &[_]u64{ 24000, 11000, 10000, 6000, 4000 }, calories);
+}
+
+test "day 1 part 1" {
+    const calories = try get_calories_per_elf(std.testing.allocator, test_input);
+    defer std.testing.allocator.free(calories);
+    try std.testing.expectEqual(@as(u64, 24000), part1(calories));
+}
+
+test "day 1 part 2" {
+    const calories = try get_calories_per_elf(std.testing.allocator, test_input);
+    defer std.testing.allocator.free(calories);
+    try std.testing.expectEqual(@as(u64, 45000), part2(calories));
 }
 
 // Useful stdlib functions
