@@ -11,6 +11,10 @@ pub const gpa = gpa_impl.allocator();
 
 // Add utility functions here
 
+pub fn lines(input: []const u8) std.mem.SplitIterator(u8) {
+    return split(u8, trim(u8, input, "\n"), "\n");
+}
+
 // Useful stdlib functions
 const tokenize = std.mem.tokenize;
 const split = std.mem.split;
