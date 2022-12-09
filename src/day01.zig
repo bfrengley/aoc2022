@@ -50,7 +50,7 @@ fn getCaloriesPerElf(allocator: Allocator, input: []const u8) ![]u64 {
         try calories.append(curr);
     }
 
-    var slice = calories.toOwnedSlice();
+    var slice = try calories.toOwnedSlice();
     sort(u64, slice, {}, comptime desc(u64));
     return slice;
 }

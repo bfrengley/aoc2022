@@ -15,6 +15,76 @@ pub fn lines(input: []const u8) std.mem.SplitIterator(u8) {
     return split(u8, trim(u8, input, "\n"), "\n");
 }
 
+// wtf
+// https://www.reddit.com/r/Zig/comments/p2clkk/comment/h8kajs7/?context=3
+pub fn range(len: usize) []const u0 {
+    return @as([*]u0, undefined)[0..len];
+}
+
+pub fn ChunkedIterator(comptime T: type) type {
+    return struct {
+        const Self = @This();
+
+        slice: []const T,
+        index: ?usize,
+        chunk_size: usize,
+
+        pub fn next(self: *Self) ?[]const u8 {
+            const start = self.index orelse return null;
+            const max_chunk_end = start + self.chunk_size;
+
+            const end = if (max_chunk_end < self.slice.len) blk: {
+                self.index = max_chunk_end;
+                break :blk max_chunk_end;
+            } else blk: {
+                self.index = null;
+                break :blk self.slice.len;
+            };
+
+            return self.slice[start..end];
+        }
+
+        pub fn reset(self: *Self) void {
+            self.index = 0;
+        }
+    };
+}
+
+pub fn chunked(comptime T: type, slice: []const T, chunk_size: usize) ChunkedIterator(T) {
+    return ChunkedIterator(T){ .slice = slice, .index = 0, .chunk_size = chunk_size };
+}
+
+pub fn WindowIterator(comptime T: type) type {
+    return struct {
+        const Self = @This();
+
+        slice: []const T,
+        index: ?usize,
+        window_size: usize,
+
+        pub fn next(self: *Self) ?[]const u8 {
+            const start = self.index orelse return null;
+            const end = start + self.window_size;
+
+            if (end >= self.slice.len) {
+                self.index = null;
+                return null;
+            }
+
+            self.index = start + 1;
+            return self.slice[start..end];
+        }
+
+        pub fn reset(self: *Self) void {
+            self.index = 0;
+        }
+    };
+}
+
+pub fn windows(comptime T: type, slice: []const T, window_size: usize) WindowIterator(T) {
+    return WindowIterator(T){ .slice = slice, .index = 0, .window_size = window_size };
+}
+
 // Useful stdlib functions
 const tokenize = std.mem.tokenize;
 const split = std.mem.split;
