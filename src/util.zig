@@ -21,6 +21,10 @@ pub fn range(len: usize) []const u0 {
     return @as([*]u0, undefined)[0..len];
 }
 
+pub fn abs(x: anytype) @TypeOf(x) {
+    return std.math.absInt(x) catch unreachable;
+}
+
 pub fn ChunkedIterator(comptime T: type) type {
     return struct {
         const Self = @This();
