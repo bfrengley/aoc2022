@@ -89,6 +89,14 @@ pub fn windows(comptime T: type, slice: []const T, window_size: usize) WindowIte
     return WindowIterator(T){ .slice = slice, .index = 0, .window_size = window_size };
 }
 
+pub fn skip(comptime T: type, iter: *T, count: usize) void {
+    var i: usize = 0;
+    while (i < count) {
+        _ = iter.next() orelse return;
+        i += 1;
+    }
+}
+
 // Useful stdlib functions
 const tokenize = std.mem.tokenize;
 const split = std.mem.split;
