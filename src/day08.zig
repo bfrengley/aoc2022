@@ -7,6 +7,8 @@ const BitSet = std.DynamicBitSet;
 
 const util = @import("util.zig");
 const gpa = util.gpa;
+const split = util.split;
+const count = util.count;
 
 const stdout = std.io.getStdOut().writer();
 
@@ -50,7 +52,7 @@ fn visibility(comptime T: type, trees: []const []const u8, x: usize, y: usize) T
     const x_max = trees[0].len - 1;
     const y_max = trees.len - 1;
 
-        // edges always visible
+    // edges always visible
     if (x == 0 or y == 0 or x == x_max or y == y_max) {
         return switch (T) {
             bool => true,
@@ -59,8 +61,8 @@ fn visibility(comptime T: type, trees: []const []const u8, x: usize, y: usize) T
         };
     }
 
-    const x_dirs = [_]isize{-1, 0, 1, 0};
-    const y_dirs = [_]isize{0, -1, 0, 1};
+    const x_dirs = [_]isize{ -1, 0, 1, 0 };
+    const y_dirs = [_]isize{ 0, -1, 0, 1 };
 
     var res: T = switch (T) {
         bool => false,
@@ -91,7 +93,7 @@ fn dirVis(comptime T: type, trees: []const []const u8, x: usize, y: usize, x_dir
             return switch (T) {
                 bool => false,
                 isize => (absInt(x_dir * (@bitCast(isize, x) - x_)) catch unreachable) +
-                        (absInt(y_dir * (@bitCast(isize, y) - y_)) catch unreachable),
+                    (absInt(y_dir * (@bitCast(isize, y) - y_)) catch unreachable),
                 else => @compileError("unexpected return type, expected bool or isize"),
             };
         }
@@ -102,37 +104,9 @@ fn dirVis(comptime T: type, trees: []const []const u8, x: usize, y: usize, x_dir
     return switch (T) {
         bool => true,
         isize => (absInt(x_dir * (@bitCast(isize, x) - x_)) catch unreachable) +
-                (absInt(y_dir * (@bitCast(isize, y) - y_)) catch unreachable) - 1,
+            (absInt(y_dir * (@bitCast(isize, y) - y_)) catch unreachable) - 1,
         else => @compileError("unexpected return type, expected bool or isize"),
     };
-}
-
-fn count(comptime T: type, haystack: []const T, needle: T) usize {
-    var seen: usize = 0;
-    for (haystack) |v| {
-        if (v == needle) {
-            seen += 1;
-        }
-    }
-    return seen;
-}
-
-fn split(comptime T: type, comptime max_parts: usize, raw: []const T, token: T) [max_parts][]const T {
-    var parts: [max_parts][]const T = undefined;
-    var part_idx: usize = 0;
-    var last_idx: usize = 0;
-    var idx: usize = 0;
-
-    while (idx < raw.len and part_idx < max_parts) {
-        if (raw[idx] == token) {
-            parts[part_idx] = raw[last_idx..idx];
-            part_idx += 1;
-            last_idx = idx + 1;
-        }
-        idx += 1;
-    }
-
-    return parts;
 }
 
 const test_input: []const u8 =

@@ -12,7 +12,7 @@ pub const gpa = gpa_impl.allocator();
 // Add utility functions here
 
 pub fn lines(input: []const u8) std.mem.SplitIterator(u8) {
-    return split(u8, trim(u8, input, "\n"), "\n");
+    return std.mem.split(u8, trim(u8, input, "\n"), "\n");
 }
 
 // wtf
@@ -89,17 +89,53 @@ pub fn windows(comptime T: type, slice: []const T, window_size: usize) WindowIte
     return WindowIterator(T){ .slice = slice, .index = 0, .window_size = window_size };
 }
 
-pub fn skip(comptime T: type, iter: *T, count: usize) void {
+pub fn count(comptime T: type, haystack: []const T, needle: T) usize {
+    var seen: usize = 0;
+    for (haystack) |v| {
+        if (v == needle) {
+            seen += 1;
+        }
+    }
+    return seen;
+}
+
+pub fn split(comptime T: type, comptime max_parts: usize, raw: []const T, token: T) [max_parts][]const T {
+    var parts: [max_parts][]const T = undefined;
+    var part_idx: usize = 0;
+    var last_idx: usize = 0;
+    var idx: usize = 0;
+
+    while (idx < raw.len and part_idx < max_parts) {
+        if (raw[idx] == token) {
+            parts[part_idx] = raw[last_idx..idx];
+            part_idx += 1;
+            last_idx = idx + 1;
+        }
+        idx += 1;
+    }
+
+    return parts;
+}
+
+pub fn skip(comptime T: type, iter: *T, n: usize) void {
     var i: usize = 0;
-    while (i < count) {
+    while (i < n) {
         _ = iter.next() orelse return;
         i += 1;
     }
 }
 
+/// bound is like clamp, but it returns an error if n is outside the given range and returns n unmodified
+/// otherwise.
+pub fn bound(comptime T: type, n: T, lower: T, upper: T) error{Overflow}!T {
+    if (n < lower or n > upper) {
+        return error.Overflow;
+    }
+    return n;
+}
+
 // Useful stdlib functions
 const tokenize = std.mem.tokenize;
-const split = std.mem.split;
 const indexOf = std.mem.indexOfScalar;
 const indexOfAny = std.mem.indexOfAny;
 const indexOfStr = std.mem.indexOfPosLinear;
