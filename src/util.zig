@@ -33,7 +33,7 @@ pub fn ChunkedIterator(comptime T: type) type {
         index: ?usize,
         chunk_size: usize,
 
-        pub fn next(self: *Self) ?[]const u8 {
+        pub fn next(self: *Self) ?[]const T {
             const start = self.index orelse return null;
             const max_chunk_end = start + self.chunk_size;
 
