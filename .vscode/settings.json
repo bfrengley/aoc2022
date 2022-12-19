@@ -4,5 +4,10 @@
     // with Ctrl+P "> Preferences: Open Settings (JSON)"
     // to have it apply to all projects
     "debug.allowBreakpointsEverywhere": true,
-    "zls.warn_style": true
+    "zls.warn_style": true,
+    "zls.enable_ast_check_diagnostics": true,
+    "zls.enable_import_embedfile_argument_completions": true,
+    "zls.enable_inlay_hints": true,
+    "zls.enable_snippets": true,
+    "zls.include_at_in_builtins": true
 }
